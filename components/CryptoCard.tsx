@@ -10,7 +10,7 @@ interface Coin {
 }
 
 const CryptoCard: React.FC<{ coin: Coin }> = ({ coin }) => (
-    <Box maxW="sm" borderWidth="1px" borderRadius="lg" overflow="hidden" p="5">
+    <Box maxW="sm" borderWidth="1px" borderRadius="xl" overflow="hidden" p="5">
         <Image src={coin.image} alt={coin.name} boxSize="50px" />
         <Text fontSize="lg">Price: ${coin.current_price}</Text>
         <Text>Change: {coin.price_change_percentage_24h}%</Text>

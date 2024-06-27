@@ -19,7 +19,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
     return (
         <HStack>
             <Input
-                placeholder="Kripto para ara..."
+                placeholder="Search for a cryptocurrency..."
                 value={inputValue}
                 onChange={handleInputChange}
             />

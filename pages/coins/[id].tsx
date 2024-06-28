@@ -5,7 +5,7 @@ import { CoinDetailProps } from '@/types';
 
 const CoinDetail: NextPage<CoinDetailProps> = ({ coin }) => {
   return (
-    <Box p="5" maxW="600px" mx="auto" mt="10" borderWidth="1px" borderRadius="lg" overflow="hidden" boxShadow="lg">
+    <Box p="5" maxW="1000px" mx="auto" mt="10" borderWidth="1px" borderRadius="lg" overflow="hidden" boxShadow="lg">
       <VStack spacing="5">
         <Image src={coin.image} alt={coin.name} boxSize="100px" />
         <Heading as="h1" size="xl" textAlign="center">{coin.name}</Heading>
@@ -46,7 +46,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.params!;
   const apiBaseURL = 'https://api.coingecko.com/api/v3';
   const response = await axios.get(`${apiBaseURL}/coins/${id}`);
-
   const coin = {
     image: response.data.image.large,
     name: response.data.name,

@@ -63,9 +63,9 @@ const HomePage: React.FC<HomePageProps> = ({ coins }) => {
                     <a className="welcome-link" onClick={handleLinkClick}>Enter</a>
                 </div>
             ) : (
-                <div style={{ padding: '20px' }}>
+                <div>
                     <Avatar>
-                        <AvatarBadge boxSize='1.25em' bg='green.500' />
+                        <AvatarBadge boxSize='1.25em' bg='teal.500' />
                     </Avatar>
                     {watchlist.length > 0 && (
                         <WatchList

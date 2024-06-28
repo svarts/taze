@@ -2,7 +2,7 @@ import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import { fetchCoins } from '@/services/api';
 import { CryptoList } from '@/components/CryptoList';
 import { WatchList } from '@/components/WatchList';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ICoin } from '@/types';
 import { logError } from '@/services/logger';
 import { Avatar, AvatarBadge, Input, Box, Container } from '@chakra-ui/react';
@@ -27,6 +27,13 @@ const HomePage: React.FC<HomePageProps> = ({ coins }) => {
     const [allCoins, setAllCoins] = useState<ICoin[]>(coins);
     const [page, setPage] = useState<number>(2);
     const [hasMore, setHasMore] = useState<boolean>(true);
+
+    useEffect(() => {
+        const hasVisitedBefore = localStorage.getItem('hasVisitedBefore');
+        if (hasVisitedBefore) {
+            setShowWelcome(false);
+        }
+    }, []);
 
     const handleWatchlistChange = (coin: ICoin, isAdding: boolean) => {
         setWatchlist(prev => isAdding
@@ -53,6 +60,7 @@ const HomePage: React.FC<HomePageProps> = ({ coins }) => {
 
     const handleLinkClick = () => {
         setShowWelcome(false);
+        localStorage.setItem('hasVisitedBefore', 'true');
     };
 
     return (
@@ -64,13 +72,13 @@ const HomePage: React.FC<HomePageProps> = ({ coins }) => {
                 </div>
             ) : (
                 <Container maxW="container.xl">
-                    <Box mb="5" display="flex" justifyContent="space-between" alignItems="center" p="7">
+                    <Box mb="5" display="flex" justifyContent="space-between" alignItems="center" p="6">
                         <Input
                             placeholder="Search Cryptocurrencies"
                             value={searchText}
                             onChange={(e) => setSearchText(e.target.value)}
                             width="400px"
-                            bg="none"
+                            bg="white"
                             borderColor="gray.600"
                         />
                         <Avatar>

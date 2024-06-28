@@ -5,7 +5,7 @@ import CryptoCard from './CryptoCard';
 
 export const CryptoList: React.FC<CryptoListProps> = ({ cryptos, onAddToWatchList }) => {
     return (
-        <Box p="8" borderRadius="xl" >
+        <Box p="6" borderRadius="xl" >
             <Heading mb="5" textAlign="center" color="teal.500">Cryptocurrency Tracker</Heading>
             <Divider mb="5" borderColor="#1e293b"/>
             <Grid templateColumns="repeat(3, 1fr)" gap={8}>

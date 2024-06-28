@@ -5,7 +5,7 @@ import { WatchListProps } from '@/types';
 
 export const WatchList: React.FC<WatchListProps> = ({ watchlist, onRemoveFromWatchlist }) => {
     return (
-        <Flex direction="row" p="5" flexWrap="wrap" gap="4">
+        <Flex direction="row" p="6" flexWrap="wrap" gap="4">
             {watchlist.map((crypto) => (
                 <Box 
                     key={crypto.id} 

@@ -1,15 +1,32 @@
 import { GetServerSideProps, NextPage } from 'next';
+import { useRouter } from 'next/router';
 import axios from 'axios';
-import { Box, Image, Text, Flex, Stat, StatLabel, StatNumber, StatHelpText, VStack, Heading, Divider } from '@chakra-ui/react';
+import { Box, Image, Text, Flex, Stat, StatLabel, StatNumber, StatHelpText, VStack, Heading, Divider, IconButton } from '@chakra-ui/react';
+import { ArrowBackIcon } from '@chakra-ui/icons';
 import { CoinDetailProps } from '@/types';
 
 const CoinDetail: NextPage<CoinDetailProps> = ({ coin }) => {
+  const router = useRouter();
+
+  const handleBackClick = () => {
+    router.push('/');
+  };
+
   return (
-    <Box p="5" maxW="1000px" mx="auto" mt="10" borderWidth="1px" borderRadius="lg" overflow="hidden" boxShadow="lg">
+    <Box p="5" maxW="1000px" mx="auto" mt="10" borderWidth="1px" borderRadius="lg" overflow="hidden" boxShadow="lg" backgroundColor="#1e1b4b" color="white">
+      <IconButton
+        aria-label="Back"
+        icon={<ArrowBackIcon />}
+        onClick={handleBackClick}
+        colorScheme="whiteAlpha"
+        variant="ghost"
+        color="white"
+        mb="4"
+      />
       <VStack spacing="5">
         <Image src={coin.image} alt={coin.name} boxSize="100px" />
         <Heading as="h1" size="xl" textAlign="center">{coin.name}</Heading>
-        <Divider />
+        <Divider borderColor="whiteAlpha.500" />
         <Stat>
           <StatLabel>Current Price</StatLabel>
           <StatNumber>${coin.current_price.toLocaleString()}</StatNumber>

@@ -36,21 +36,18 @@ export const fetchCoins = async (page: number) => {
             params: {
                 vs_currency: 'usd',
                 order: 'market_cap_desc',
-                per_page: 20, 
+                per_page: 20,
                 page: page,
                 sparkline: true,
                 price_change_percentage: '24h,7d,30d,1y',
             },
         })
             .then(response => {
-                if (page === 1) {
-                    cache = response.data;
-                    lastFetchTime = now;
-                }
+                page === 1 ? (cache = response.data, lastFetchTime = now) : null;
                 return response.data;
             })
             .catch(error => {
-                logError(error);
+                logError(error as Error);
                 throw error;
             });
 };

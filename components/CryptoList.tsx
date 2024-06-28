@@ -1,44 +1,14 @@
 import React from 'react';
-import { Box, Image, Text, Grid, Tooltip, IconButton } from '@chakra-ui/react';
-import { StarIcon } from '@chakra-ui/icons';
-import { ICoin } from '@/types';
-import NextLink from 'next/link';
-
-interface CryptoListProps {
-    cryptos: ICoin[];
-    onAddToWatchList: (coin: ICoin) => void;
-    isWatchList?: boolean;
-}
+import { Box, Grid } from '@chakra-ui/react';
+import { CryptoListProps } from '@/types';
+import CryptoCard from './CryptoCard';
 
 export const CryptoList: React.FC<CryptoListProps> = ({ cryptos, onAddToWatchList }) => {
     return (
         <Box p="5">
-            <Grid templateColumns="repeat(4, 1fr)" gap={6}>
+            <Grid templateColumns="repeat(auto-fill, minmax(300px, 1fr))" gap={6}>
                 {cryptos.map((crypto) => (
-                    <Box key={crypto.id} borderWidth="1px" borderRadius="lg" overflow="hidden" p="5">
-                        <NextLink href={`/coins/${crypto.id}`} passHref>
-                            <Image src={crypto.image} alt={crypto.name} boxSize="50px" />
-                            <Text fontSize="lg">{crypto.name}</Text>
-                            <Text>Price: ${crypto.current_price}</Text>
-                            <Text>Change: {crypto.price_change_percentage_24h}%</Text>
-                            <Text>Volume: {crypto.total_volume}</Text>
-                        </NextLink>
-                        <Tooltip label="Add to Watchlist" placement="top">
-                            <IconButton
-                                aria-label="Add to Watchlist"
-                                icon={<StarIcon />}
-                                colorScheme="none"
-                                variant="ghost"
-                                color="#fbbf24"
-                                _hover={{ color: "#fde047" }}
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    onAddToWatchList(crypto);
-                                }}
-                                mt="2"
-                            />
-                        </Tooltip>
-                    </Box>
+                    <CryptoCard key={crypto.id} coin={crypto} onAddToWatchList={onAddToWatchList} />
                 ))}
             </Grid>
         </Box>

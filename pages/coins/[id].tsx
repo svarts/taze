@@ -1,30 +1,43 @@
 import { GetServerSideProps, NextPage } from 'next';
 import axios from 'axios';
-import { Box, Image, Text } from '@chakra-ui/react';
-
-interface CoinDetailProps {
-  coin: {
-    image: string;
-    name: string;
-    current_price: number;
-    price_change_percentage_24h_in_currency: number;
-    market_cap: number;
-    low_24h: number;
-    high_24h: number;
-    description: string;
-  };
-}
+import { Box, Image, Text, Flex, Stat, StatLabel, StatNumber, StatHelpText, VStack, Heading, Divider } from '@chakra-ui/react';
+import { CoinDetailProps } from '@/types';
 
 const CoinDetail: NextPage<CoinDetailProps> = ({ coin }) => {
   return (
-    <Box p="5">
-      <Image src={coin.image} alt={coin.name} boxSize="100px" />
-      <Text fontSize="2xl">{coin.name}</Text>
-      <Text>Price: ${coin.current_price}</Text>
-      <Text>24h Change: {coin.price_change_percentage_24h_in_currency}%</Text>
-      <Text>Market Cap: ${coin.market_cap.toLocaleString()}</Text>
-      <Text>Low 24h: ${coin.low_24h} / High 24h: ${coin.high_24h}</Text>
-      <Text>Description: {coin.description}</Text>
+    <Box p="5" maxW="600px" mx="auto" mt="10" borderWidth="1px" borderRadius="lg" overflow="hidden" boxShadow="lg">
+      <VStack spacing="5">
+        <Image src={coin.image} alt={coin.name} boxSize="100px" />
+        <Heading as="h1" size="xl" textAlign="center">{coin.name}</Heading>
+        <Divider />
+        <Stat>
+          <StatLabel>Current Price</StatLabel>
+          <StatNumber>${coin.current_price.toLocaleString()}</StatNumber>
+          <StatHelpText>
+            <Text color={coin.price_change_percentage_24h_in_currency >= 0 ? "green.500" : "red.500"}>
+              {coin.price_change_percentage_24h_in_currency.toFixed(2)}%
+            </Text>
+          </StatHelpText>
+        </Stat>
+        <Flex justifyContent="space-between" w="100%">
+          <Stat>
+            <StatLabel>Market Cap</StatLabel>
+            <StatNumber>${coin.market_cap.toLocaleString()}</StatNumber>
+          </Stat>
+          <Stat>
+            <StatLabel>Low (24h)</StatLabel>
+            <StatNumber>${coin.low_24h.toLocaleString()}</StatNumber>
+          </Stat>
+          <Stat>
+            <StatLabel>High (24h)</StatLabel>
+            <StatNumber>${coin.high_24h.toLocaleString()}</StatNumber>
+          </Stat>
+        </Flex>
+        <Box w="100%">
+          <Heading as="h2" size="md" mb="2">Description</Heading>
+          <Text>{coin.description}</Text>
+        </Box>
+      </VStack>
     </Box>
   );
 };

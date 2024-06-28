@@ -1,13 +1,7 @@
 import React from 'react';
 import { Box, Image, Text, Flex, IconButton, Tooltip } from '@chakra-ui/react';
 import { MinusIcon } from '@chakra-ui/icons';
-import { ICoin } from '@/types';
-
-interface WatchListProps {
-    watchlist: ICoin[];
-    onRemoveFromWatchlist: (id: string) => void;
-    isWatchlist?: boolean;
-}
+import { WatchListProps } from '@/types';
 
 export const WatchList: React.FC<WatchListProps> = ({ watchlist, onRemoveFromWatchlist }) => {
     return (

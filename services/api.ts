@@ -26,25 +26,27 @@ let cache: any = null;
 let lastFetchTime = 0;
 const CACHE_DURATION = 60 * 1000;
 
-export const fetchCoins = async () => {
+export const fetchCoins = async (page: number) => {
     const now = Date.now();
     const isCacheValid = cache && (now - lastFetchTime < CACHE_DURATION);
 
-    return isCacheValid
+    return isCacheValid && page === 1
         ? cache
         : http.get('/coins/markets', {
             params: {
                 vs_currency: 'usd',
                 order: 'market_cap_desc',
-                per_page: 100,
-                page: 1,
+                per_page: 20, 
+                page: page,
                 sparkline: true,
                 price_change_percentage: '24h,7d,30d,1y',
             },
         })
             .then(response => {
-                cache = response.data;
-                lastFetchTime = now;
+                if (page === 1) {
+                    cache = response.data;
+                    lastFetchTime = now;
+                }
                 return response.data;
             })
             .catch(error => {

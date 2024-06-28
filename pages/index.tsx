@@ -5,14 +5,16 @@ import { WatchList } from '@/components/WatchList';
 import { useState } from 'react';
 import { ICoin } from '@/types';
 import { logError } from '@/services/logger';
+import { Avatar, AvatarBadge } from '@chakra-ui/react';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 export const getStaticProps: GetStaticProps = async () => {
     try {
-        const coins = await fetchCoins();
+        const coins = await fetchCoins(1);
         return { props: { coins } };
     } catch (error) {
         logError(error as Error);
-        return { props: { coins: [] } }; 
+        return { props: { coins: [] } };
     }
 };
 
@@ -21,6 +23,10 @@ type HomePageProps = InferGetStaticPropsType<typeof getStaticProps>;
 const HomePage: React.FC<HomePageProps> = ({ coins }) => {
     const [searchText, setSearchText] = useState<string>('');
     const [watchlist, setWatchlist] = useState<ICoin[]>([]);
+    const [showWelcome, setShowWelcome] = useState(true);
+    const [allCoins, setAllCoins] = useState<ICoin[]>(coins);
+    const [page, setPage] = useState<number>(2);
+    const [hasMore, setHasMore] = useState<boolean>(true);
 
     const handleWatchlistChange = (coin: ICoin, isAdding: boolean) => {
         setWatchlist(prev => isAdding
@@ -29,25 +35,61 @@ const HomePage: React.FC<HomePageProps> = ({ coins }) => {
         );
     };
 
-    const filteredCoins = coins.filter((coin: { name: string; }) =>
+    const fetchMoreCoins = async () => {
+        try {
+            const newCoins = await fetchCoins(page);
+            setAllCoins(prevCoins => [...prevCoins, ...newCoins]);
+            setPage(prevPage => prevPage + 1);
+            if (newCoins.length === 0) setHasMore(false);
+        } catch (error) {
+            logError(error as Error);
+            setHasMore(false);
+        }
+    };
+
+    const filteredCoins = allCoins.filter((coin: { name: string; }) =>
         coin.name.toLowerCase().includes(searchText.toLowerCase())
     );
 
+    const handleLinkClick = () => {
+        setShowWelcome(false);
+    };
+
     return (
-        <div style={{ padding: '20px' }}>
-            {watchlist.length > 0 && (
-                <WatchList
-                    watchlist={watchlist}
-                    onRemoveFromWatchlist={(id: string) => handleWatchlistChange({ id } as ICoin, false)}
-                    isWatchlist={true}
-                />
+        <>
+            {showWelcome ? (
+                <div className="welcome-page">
+                    <h1 className="welcome-text">Welcome to Crypto Tracking App</h1>
+                    <a className="welcome-link" onClick={handleLinkClick}>Enter</a>
+                </div>
+            ) : (
+                <div style={{ padding: '20px' }}>
+                    <Avatar>
+                        <AvatarBadge boxSize='1.25em' bg='green.500' />
+                    </Avatar>
+                    {watchlist.length > 0 && (
+                        <WatchList
+                            watchlist={watchlist}
+                            onRemoveFromWatchlist={(id: string) => handleWatchlistChange({ id } as ICoin, false)}
+                            isWatchlist={true}
+                        />
+                    )}
+                    <InfiniteScroll
+                        dataLength={filteredCoins.length}
+                        next={fetchMoreCoins}
+                        hasMore={hasMore}
+                        loader={<h4>Loading...</h4>}
+                        endMessage={<p style={{ textAlign: 'center' }}><b>Yay! You have seen it all</b></p>}
+                    >
+                        <CryptoList
+                            cryptos={filteredCoins}
+                            onAddToWatchList={(coin: ICoin) => handleWatchlistChange(coin, true)}
+                            isWatchList={false}
+                        />
+                    </InfiniteScroll>
+                </div>
             )}
-            <CryptoList
-                cryptos={filteredCoins}
-                onAddToWatchList={(coin: ICoin) => handleWatchlistChange(coin, true)}
-                isWatchList={false}
-            />
-        </div>
+        </>
     );
 };
 

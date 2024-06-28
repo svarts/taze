@@ -1,23 +1,39 @@
 import React from 'react';
-import { Box, Image, Text, Flex, Button } from '@chakra-ui/react';
+import { Box, Image, Text, Flex, IconButton, Tooltip } from '@chakra-ui/react';
+import { MinusIcon } from '@chakra-ui/icons';
 import { ICoin } from '@/types';
 
-interface WatchlistProps {
+interface WatchListProps {
     watchlist: ICoin[];
     onRemoveFromWatchlist: (id: string) => void;
+    isWatchlist?: boolean;
 }
 
-export const Watchlist: React.FC<WatchlistProps> = ({ watchlist, onRemoveFromWatchlist }) => {
+const WatchList: React.FC<WatchListProps> = ({ watchlist, onRemoveFromWatchlist }) => {
     return (
-        <Flex direction="column" p="5">
+        <Flex direction="row" p="5">
             {watchlist.map((crypto) => (
-                <Box key={crypto.id} p="5" borderWidth="1px" borderRadius="lg">
-                    <Image src={crypto.image} alt={crypto.name} boxSize="50px" />
-                    <Text fontSize="lg">{crypto.name}</Text>
-                    <Text>Price: ${crypto.current_price}</Text>
-                    <Button onClick={() => onRemoveFromWatchlist(crypto.id)}>Remove</Button>
+                <Box key={crypto.id} p="1" borderWidth="1px" borderRadius="lg">
+                    <Flex align="center" gap="5">
+                        <Image src={crypto.image} alt={crypto.name} boxSize="50px" />
+                        <Box flex="1">
+                            <Text fontSize="md">{crypto.name}</Text>
+                            <Text fontSize="sm">${crypto.current_price}</Text>
+                        </Box>
+                        <Tooltip label="Remove from watchlist" placement="top">
+                            <IconButton
+                                aria-label="Remove from watchlist"
+                                icon={<MinusIcon />}
+                                colorScheme="red"
+                                variant="solid"
+                                onClick={() => onRemoveFromWatchlist(crypto.id)}
+                            />
+                        </Tooltip>
+                    </Flex>
                 </Box>
             ))}
         </Flex>
     );
 };
+
+export default WatchList;

@@ -1,50 +1,52 @@
-import React, { useEffect, useState } from 'react';
-import CryptoList from '@/components/CryptoList';
-import SearchBar from '@/components/SearchBar';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { fetchCoins } from '@/services/api';
+import CryptoList from '@/components/CryptoList';
+import WatchList from '@/components/WatchList';
+import { useState } from 'react';
 import { ICoin } from '@/types';
+import { logError } from '@/services/logger';
 
-const HomePage: React.FC = () => {
-    const [coins, setCoins] = useState<ICoin[]>([]);
-    const [searchText, setSearchText] = useState('');
+export const getServerSideProps: GetServerSideProps = async () => {
+    try {
+        const coins = await fetchCoins();
+        return { props: { coins } };
+    } catch (error) {
+        logError(error as Error);
+        return { props: { coins: [] } }; 
+    }
+};
+
+type HomePageProps = InferGetServerSidePropsType<typeof getServerSideProps>;
+
+const HomePage: React.FC<HomePageProps> = ({ coins }) => {
+    const [searchText, setSearchText] = useState<string>('');
     const [watchlist, setWatchlist] = useState<ICoin[]>([]);
 
-    useEffect(() => {
-        const loadCoins = async () => {
-            try {
-                const data = await fetchCoins();
-                setCoins(data);
-            } catch (error) {
-                console.log('failed to fetch coins:', error);
-            }
-        };
-        loadCoins();
-    }, []);
-
     const handleWatchlistChange = (coin: ICoin, isAdding: boolean) => {
-        setWatchlist(prev => isAdding 
-            ? prev.find(c => c.id === coin.id) ? prev : [...prev, coin] 
+        setWatchlist(prev => isAdding
+            ? prev.find(c => c.id === coin.id) ? prev : [...prev, coin]
             : prev.filter(c => c.id !== coin.id)
         );
     };
 
-    const filteredCoins = coins.filter(coin => 
+    const filteredCoins = coins.filter((coin: { name: string; }) =>
         coin.name.toLowerCase().includes(searchText.toLowerCase())
     );
 
     return (
         <div style={{ padding: '20px' }}>
-            <CryptoList
-                cryptos={filteredCoins}
-                onAddToWatchlist={(coin) => handleWatchlistChange(coin, true)}
-            />
             {watchlist.length > 0 && (
-                <CryptoList
-                    cryptos={watchlist}
-                    onAddToWatchlist={(coin) => handleWatchlistChange(coin, false)}
+                <WatchList
+                    watchlist={watchlist}
+                    onRemoveFromWatchlist={(id: string) => handleWatchlistChange({ id } as ICoin, false)}
                     isWatchlist={true}
                 />
             )}
+            <CryptoList
+                cryptos={filteredCoins}
+                onAddToWatchlist={(coin: ICoin) => handleWatchlistChange(coin, true)}
+                isWatchlist={false}
+            />
         </div>
     );
 };

@@ -1,7 +1,6 @@
 import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import { fetchCoins } from '@/services/api';
 import { CryptoList } from '@/components/CryptoList';
-import { WatchList } from '@/components/WatchList';
 import { useState } from 'react';
 import { ICoin } from '@/types';
 import { logError } from '@/services/logger';
@@ -67,13 +66,6 @@ const HomePage: React.FC<HomePageProps> = ({ coins }) => {
                     <Avatar>
                         <AvatarBadge boxSize='1.25em' bg='teal.500' />
                     </Avatar>
-                    {watchlist.length > 0 && (
-                        <WatchList
-                            watchlist={watchlist}
-                            onRemoveFromWatchlist={(id: string) => handleWatchlistChange({ id } as ICoin, false)}
-                            isWatchlist={true}
-                        />
-                    )}
                     <InfiniteScroll
                         dataLength={filteredCoins.length}
                         next={fetchMoreCoins}

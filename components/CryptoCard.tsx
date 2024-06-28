@@ -7,10 +7,12 @@ import NextLink from 'next/link';
 const CryptoCard: React.FC<CryptoCardProps> = ({ coin, onAddToWatchList }) => (
     <Box borderWidth="1px" borderColor="#312e81" borderRadius="xl" overflow="hidden" p="4" boxShadow="md" backgroundColor="#1e1b4b" display="flex" flexDirection="column">
         <Box display="flex" justifyContent="space-between" alignItems="center" mb="4">
+        <NextLink href={`/coins/${coin.id}`} passHref>
             <Box display="flex" alignItems="center">
                 <Image src={coin.image} alt={coin.name} boxSize="60px" borderRadius="full" loading="lazy" mr="3" />
                 <Text fontSize="md" fontWeight="bold" color="white">{coin.name}</Text>
             </Box>
+        </NextLink>
             <Tooltip label="Add to Watchlist" placement="top">
                 <IconButton
                     aria-label="Add to Watchlist"

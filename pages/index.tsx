@@ -1,10 +1,11 @@
 import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import { fetchCoins } from '@/services/api';
 import { CryptoList } from '@/components/CryptoList';
+import { WatchList } from '@/components/WatchList';
 import { useState } from 'react';
 import { ICoin } from '@/types';
 import { logError } from '@/services/logger';
-import { Avatar, AvatarBadge } from '@chakra-ui/react';
+import { Avatar, AvatarBadge, Input, Box } from '@chakra-ui/react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 export const getStaticProps: GetStaticProps = async () => {
@@ -62,10 +63,26 @@ const HomePage: React.FC<HomePageProps> = ({ coins }) => {
                     <a className="welcome-link" onClick={handleLinkClick}>Enter</a>
                 </div>
             ) : (
-                <div>
-                    <Avatar>
-                        <AvatarBadge boxSize='1.25em' bg='teal.500' />
-                    </Avatar>
+                <Box p="5">
+                    <Box mb="5" display="flex" justifyContent="space-between" alignItems="center">
+                        <Input
+                            placeholder="Search Cryptocurrencies"
+                            value={searchText}
+                            onChange={(e) => setSearchText(e.target.value)}
+                            width="300px"
+                            bg="white"
+                        />
+                        <Avatar>
+                            <AvatarBadge boxSize='1.25em' bg='teal.500' />
+                        </Avatar>
+                    </Box>
+                    {watchlist.length > 0 && (
+                        <WatchList
+                            watchlist={watchlist}
+                            onRemoveFromWatchlist={(id: string) => handleWatchlistChange({ id } as ICoin, false)}
+                            isWatchlist={true}
+                        />
+                    )}
                     <InfiniteScroll
                         dataLength={filteredCoins.length}
                         next={fetchMoreCoins}
@@ -79,7 +96,7 @@ const HomePage: React.FC<HomePageProps> = ({ coins }) => {
                             isWatchList={false}
                         />
                     </InfiniteScroll>
-                </div>
+                </Box>
             )}
         </>
     );

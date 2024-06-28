@@ -5,7 +5,7 @@ import { WatchList } from '@/components/WatchList';
 import { useState } from 'react';
 import { ICoin } from '@/types';
 import { logError } from '@/services/logger';
-import { Avatar, AvatarBadge, Input, Box } from '@chakra-ui/react';
+import { Avatar, AvatarBadge, Input, Box, Container } from '@chakra-ui/react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 export const getStaticProps: GetStaticProps = async () => {
@@ -63,14 +63,15 @@ const HomePage: React.FC<HomePageProps> = ({ coins }) => {
                     <a className="welcome-link" onClick={handleLinkClick}>Enter</a>
                 </div>
             ) : (
-                <Box p="5">
-                    <Box mb="5" display="flex" justifyContent="space-between" alignItems="center">
+                <Container maxW="container.xl">
+                    <Box mb="5" display="flex" justifyContent="space-between" alignItems="center" p="7">
                         <Input
                             placeholder="Search Cryptocurrencies"
                             value={searchText}
                             onChange={(e) => setSearchText(e.target.value)}
-                            width="300px"
-                            bg="white"
+                            width="400px"
+                            bg="none"
+                            borderColor="gray.600"
                         />
                         <Avatar>
                             <AvatarBadge boxSize='1.25em' bg='teal.500' />
@@ -88,7 +89,7 @@ const HomePage: React.FC<HomePageProps> = ({ coins }) => {
                         next={fetchMoreCoins}
                         hasMore={hasMore}
                         loader={<h4>Loading...</h4>}
-                        endMessage={<p style={{ textAlign: 'center' }}><b>Yay! You have seen it all</b></p>}
+                        endMessage={<p style={{ textAlign: 'center', color: 'white' }}><b>Yay! You have seen it all</b></p>}
                     >
                         <CryptoList
                             cryptos={filteredCoins}
@@ -96,7 +97,7 @@ const HomePage: React.FC<HomePageProps> = ({ coins }) => {
                             isWatchList={false}
                         />
                     </InfiniteScroll>
-                </Box>
+                </Container>
             )}
         </>
     );

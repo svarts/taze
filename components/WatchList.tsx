@@ -5,13 +5,20 @@ import { WatchListProps } from '@/types';
 
 export const WatchList: React.FC<WatchListProps> = ({ watchlist, onRemoveFromWatchlist }) => {
     return (
-        <Flex direction="row" p="5">
+        <Flex direction="row" p="5" flexWrap="wrap" gap="4">
             {watchlist.map((crypto) => (
-                <Box key={crypto.id} p="1" borderWidth="1px" borderRadius="lg">
-                    <Flex align="center" gap="5">
-                        <Image src={crypto.image} alt={crypto.name} boxSize="50px" />
-                        <Box flex="1">
-                            <Text fontSize="md">{crypto.name}</Text>
+                <Box 
+                    key={crypto.id} 
+                    p="4" 
+                    borderWidth="1px" 
+                    borderRadius="full" 
+                    borderColor="#312e81" 
+                    backgroundColor="#1e1b4b"
+                >
+                    <Flex align="center" gap="4">
+                        <Image src={crypto.image} alt={crypto.name} boxSize="50px" borderRadius="full" />
+                        <Box flex="1" color="white">
+                            <Text fontSize="md" fontWeight="bold">{crypto.name}</Text>
                             <Text fontSize="sm">${crypto.current_price}</Text>
                         </Box>
                         <Tooltip label="Remove from watchlist" placement="top">
@@ -20,6 +27,7 @@ export const WatchList: React.FC<WatchListProps> = ({ watchlist, onRemoveFromWat
                                 icon={<MinusIcon />}
                                 colorScheme="red"
                                 variant="solid"
+                                borderRadius="full"
                                 onClick={() => onRemoveFromWatchlist(crypto.id)}
                             />
                         </Tooltip>

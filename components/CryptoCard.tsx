@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Image, Text, Tooltip, IconButton, Stat, StatGroup, StatLabel, StatNumber, StatHelpText, StatArrow } from '@chakra-ui/react';
+import { Box, Image, Text, Tooltip, IconButton, Stat, StatGroup, StatLabel, StatNumber, StatHelpText, StatArrow, Badge } from '@chakra-ui/react';
 import { StarIcon } from '@chakra-ui/icons';
 import { CryptoCardProps } from '@/types';
 import NextLink from 'next/link';
@@ -29,19 +29,19 @@ const CryptoCard: React.FC<CryptoCardProps> = ({ coin, onAddToWatchList }) => (
             </Tooltip>
         </Box>
         <NextLink href={`/coins/${coin.id}`} passHref>
-            <Box cursor="pointer" textAlign="center" color="white">
+            <Box cursor="pointer" textAlign="left" color="white">
                 <StatGroup>
                     <Stat>
-                        <StatLabel color="white">Price</StatLabel>
-                        <StatNumber color="white">${coin.current_price}</StatNumber>
-                        <StatHelpText color="white">
+                        <StatLabel color="white" fontSize="md" marginBottom={2}>Price</StatLabel>
+                        <Badge colorScheme="green" fontSize="md" borderRadius="full" marginBottom={2}>${coin.current_price}</Badge>
+                        <StatHelpText color="white" fontSize="md">
                             <StatArrow type={coin.price_change_percentage_24h >= 0 ? 'increase' : 'decrease'} />
                             {coin.price_change_percentage_24h}%
                         </StatHelpText>
                     </Stat>
                     <Stat>
-                        <StatLabel color="white">24h Volume</StatLabel>
-                        <StatNumber color="white">{coin.total_volume}</StatNumber>
+                        <StatLabel color="white" marginBottom={2}>24h Volume</StatLabel>
+                        <Badge colorScheme="purple" fontSize="xl" borderRadius="full">{coin.total_volume}</Badge>
                     </Stat>
                 </StatGroup>
             </Box>

@@ -1,12 +1,12 @@
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import { fetchCoins } from '@/services/api';
-import CryptoList from '@/components/CryptoList';
-import WatchList from '@/components/WatchList';
+import { CryptoList } from '@/components/CryptoList';
+import { WatchList } from '@/components/WatchList';
 import { useState } from 'react';
 import { ICoin } from '@/types';
 import { logError } from '@/services/logger';
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
     try {
         const coins = await fetchCoins();
         return { props: { coins } };
@@ -16,7 +16,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
     }
 };
 
-type HomePageProps = InferGetServerSidePropsType<typeof getServerSideProps>;
+type HomePageProps = InferGetStaticPropsType<typeof getStaticProps>;
 
 const HomePage: React.FC<HomePageProps> = ({ coins }) => {
     const [searchText, setSearchText] = useState<string>('');

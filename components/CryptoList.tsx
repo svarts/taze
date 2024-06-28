@@ -1,8 +1,8 @@
 import React from 'react';
 import { Box, Image, Text, Grid, Tooltip, IconButton } from '@chakra-ui/react';
 import { StarIcon } from '@chakra-ui/icons';
-import NextLink from 'next/link';
 import { ICoin } from '@/types';
+import NextLink from 'next/link';
 
 interface CryptoListProps {
     cryptos: ICoin[];
@@ -10,7 +10,7 @@ interface CryptoListProps {
     isWatchList?: boolean;
 }
 
-const CryptoList: React.FC<CryptoListProps> = ({ cryptos, onAddToWatchList }) => {
+export const CryptoList: React.FC<CryptoListProps> = ({ cryptos, onAddToWatchList }) => {
     return (
         <Box p="5">
             <Grid templateColumns="repeat(4, 1fr)" gap={6}>
@@ -44,5 +44,3 @@ const CryptoList: React.FC<CryptoListProps> = ({ cryptos, onAddToWatchList }) =>
         </Box>
     );
 };
-
-export default CryptoList;

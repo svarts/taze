@@ -9,7 +9,7 @@ interface WatchListProps {
     isWatchlist?: boolean;
 }
 
-const WatchList: React.FC<WatchListProps> = ({ watchlist, onRemoveFromWatchlist }) => {
+export const WatchList: React.FC<WatchListProps> = ({ watchlist, onRemoveFromWatchlist }) => {
     return (
         <Flex direction="row" p="5">
             {watchlist.map((crypto) => (
@@ -35,5 +35,3 @@ const WatchList: React.FC<WatchListProps> = ({ watchlist, onRemoveFromWatchlist 
         </Flex>
     );
 };
-
-export default WatchList;

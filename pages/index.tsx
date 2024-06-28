@@ -78,8 +78,9 @@ const HomePage: React.FC<HomePageProps> = ({ coins }) => {
                             value={searchText}
                             onChange={(e) => setSearchText(e.target.value)}
                             width="400px"
-                            bg="white"
+                            bg="none"
                             borderColor="gray.600"
+                            textColor={searchText ? 'white' : 'gray.400'}
                         />
                         <Avatar>
                             <AvatarBadge boxSize='1.25em' bg='teal.500' />

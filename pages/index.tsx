@@ -5,7 +5,7 @@ import { WatchList } from '@/components/WatchList';
 import { useState, useEffect } from 'react';
 import { ICoin } from '@/types';
 import { logError } from '@/services/logger';
-import { Avatar, AvatarBadge, Input, Box, Container } from '@chakra-ui/react';
+import { Avatar, AvatarBadge, Input, Box, Container, Button } from '@chakra-ui/react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 export const getStaticProps: GetStaticProps = async () => {
@@ -29,10 +29,7 @@ const HomePage: React.FC<HomePageProps> = ({ coins }) => {
     const [hasMore, setHasMore] = useState<boolean>(true);
 
     useEffect(() => {
-        const hasVisitedBefore = localStorage.getItem('hasVisitedBefore');
-        if (hasVisitedBefore) {
-            setShowWelcome(false);
-        }
+        localStorage.getItem('hasVisitedBefore') ? setShowWelcome(false) : setShowWelcome(true);
     }, []);
 
     const handleWatchlistChange = (coin: ICoin, isAdding: boolean) => {
@@ -68,22 +65,23 @@ const HomePage: React.FC<HomePageProps> = ({ coins }) => {
             {showWelcome ? (
                 <div className="welcome-page">
                     <h1 className="welcome-text">Welcome to Crypto Tracking App</h1>
-                    <a className="welcome-link" onClick={handleLinkClick}>Enter</a>
+                    <Button className="welcome-link" onClick={handleLinkClick}>Enter</Button>
                 </div>
             ) : (
                 <Container maxW="container.xl">
-                    <Box mb="5" display="flex" justifyContent="space-between" alignItems="center" p="6">
+                    <Box mb="5" display="flex" justifyContent="space-between" alignItems="center" p="6" gap={4}>
                         <Input
                             placeholder="Search Cryptocurrencies"
                             value={searchText}
                             onChange={(e) => setSearchText(e.target.value)}
-                            width="400px"
+                            width={{ base: "70%", md: "400px" }}
                             bg="none"
                             borderColor="gray.600"
                             textColor={searchText ? 'white' : 'gray.400'}
+                            borderRadius="2xl"
                         />
                         <Avatar>
-                            <AvatarBadge boxSize='1.25em' bg='teal.500' />
+                            <AvatarBadge boxSize='1.25em' bg='#2dd4bf' />
                         </Avatar>
                     </Box>
                     {watchlist.length > 0 && (

@@ -27,7 +27,14 @@ export const WatchList: React.FC<WatchListProps> = ({ watchlist, onRemoveFromWat
                             <Image src={crypto.image} alt={crypto.name} boxSize="50px" borderRadius="full" />
                             <Box flex="1" color="white">
                                 <Text fontSize="md" fontWeight="bold">{crypto.name}</Text>
-                                <Badge fontSize="sm" colorScheme='green' borderRadius="full">${crypto.current_price}</Badge>
+                                <Badge
+                                    colorScheme={crypto.price_change_percentage_24h >= 0 ? 'green' : 'red'}
+                                    fontSize="sm"
+                                    borderRadius="full"
+                                    marginTop={2}
+                                >
+                                    ${crypto.current_price}
+                                </Badge>
                             </Box>
                             <Tooltip label="Remove from watchlist" placement="top">
                                 <IconButton

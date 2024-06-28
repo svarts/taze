@@ -25,13 +25,12 @@ body {
 
 .welcome-link {
     font-size: 1.5rem;
-    color: #4FD1C5;
+    color: #00594d;
     cursor: pointer;
-    text-decoration: underline;
 }
 
 .welcome-link:hover {
-    color: #81E6D9;
+    color: #00594d;
 }
 
 @keyframes fadeIn {

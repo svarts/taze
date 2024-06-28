@@ -6,11 +6,11 @@ import { ICoin } from '@/types';
 
 interface CryptoListProps {
     cryptos: ICoin[];
-    onAddToWatchlist: (coin: ICoin) => void;
-    isWatchlist?: boolean;
+    onAddToWatchList: (coin: ICoin) => void;
+    isWatchList?: boolean;
 }
 
-const CryptoList: React.FC<CryptoListProps> = ({ cryptos, onAddToWatchlist }) => {
+const CryptoList: React.FC<CryptoListProps> = ({ cryptos, onAddToWatchList }) => {
     return (
         <Box p="5">
             <Grid templateColumns="repeat(4, 1fr)" gap={6}>
@@ -33,7 +33,7 @@ const CryptoList: React.FC<CryptoListProps> = ({ cryptos, onAddToWatchlist }) =>
                                 _hover={{ color: "#fde047" }}
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    onAddToWatchlist(crypto);
+                                    onAddToWatchList(crypto);
                                 }}
                                 mt="2"
                             />

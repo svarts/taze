@@ -44,8 +44,8 @@ const HomePage: React.FC<HomePageProps> = ({ coins }) => {
             )}
             <CryptoList
                 cryptos={filteredCoins}
-                onAddToWatchlist={(coin: ICoin) => handleWatchlistChange(coin, true)}
-                isWatchlist={false}
+                onAddToWatchList={(coin: ICoin) => handleWatchlistChange(coin, true)}
+                isWatchList={false}
             />
         </div>
     );

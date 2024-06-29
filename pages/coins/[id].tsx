@@ -1,6 +1,7 @@
-import { GetStaticProps, GetStaticPaths, NextPage } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import axios from 'axios';
+import Bottleneck from 'bottleneck';
 import { Box, Image, Text, Flex, Stat, StatLabel, StatNumber, StatHelpText, StatArrow, VStack, Heading, Divider, IconButton, Badge, Select } from '@chakra-ui/react';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { Line } from 'react-chartjs-2';
@@ -11,11 +12,13 @@ import { CoinDetailProps } from '@/types';
 
 ChartJS.register(TimeScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
 
-const CoinDetail: NextPage<CoinDetailProps> = ({ coin }) => {
+const limiter = new Bottleneck({
+  minTime: 200, 
+});
+
+const CoinDetail: NextPage<CoinDetailProps> = ({ coin, initialChartData }) => {
   const router = useRouter();
-  const [chartData, setChartData] = useState<ChartData<'line'>>({
-    datasets: [],
-  });
+  const [chartData, setChartData] = useState<ChartData<'line'>>(initialChartData);
   const [timeFrame, setTimeFrame] = useState('7');
 
   const handleBackClick = () => {
@@ -164,36 +167,48 @@ const CoinDetail: NextPage<CoinDetailProps> = ({ coin }) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const apiBaseURL = 'https://api.coingecko.com/api/v3';
-  const response = await axios.get(`${apiBaseURL}/coins/list`);
-  const paths = response.data.map((coin: { id: string }) => ({
-    params: { id: coin.id }
-  }));
-
-  return {
-    paths,
-    fallback: false
-  };
-};
-
-export const getStaticProps: GetStaticProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.params!;
   const apiBaseURL = 'https://api.coingecko.com/api/v3';
-  const response = await axios.get(`${apiBaseURL}/coins/${id}`);
+  
+  const [coinResponse, chartResponse] = await Promise.all([
+    limiter.schedule(() => axios.get(`${apiBaseURL}/coins/${id}`)),
+    limiter.schedule(() => axios.get(`${apiBaseURL}/coins/${id}/market_chart`, {
+      params: {
+        vs_currency: 'usd',
+        days: '7',
+      },
+    })),
+  ]);
+
   const coin = {
-    id: response.data.id,
-    image: response.data.image.large,
-    name: response.data.name,
-    current_price: response.data.market_data.current_price.usd,
-    price_change_percentage_24h_in_currency: response.data.market_data.price_change_percentage_24h_in_currency.usd,
-    market_cap: response.data.market_data.market_cap.usd,
-    low_24h: response.data.market_data.low_24h.usd,
-    high_24h: response.data.market_data.high_24h.usd,
-    description: response.data.description.en
+    id: coinResponse.data.id,
+    image: coinResponse.data.image.large,
+    name: coinResponse.data.name,
+    current_price: coinResponse.data.market_data.current_price.usd,
+    price_change_percentage_24h_in_currency: coinResponse.data.market_data.price_change_percentage_24h_in_currency.usd,
+    market_cap: coinResponse.data.market_data.market_cap.usd,
+    low_24h: coinResponse.data.market_data.low_24h.usd,
+    high_24h: coinResponse.data.market_data.high_24h.usd,
+    description: coinResponse.data.description.en,
   };
 
-  return { props: { coin } };
+  const initialChartData = {
+    labels: chartResponse.data.prices.map((price: [number, number]) => new Date(price[0]).toISOString()),
+    datasets: [
+      {
+        label: 'Price over Time',
+        data: chartResponse.data.prices.map((price: [number, number]) => price[1]),
+        fill: true,
+        backgroundColor: 'rgba(75,192,192,0.2)',
+        borderColor: 'rgba(75,192,192,1)',
+        borderWidth: 2,
+        pointRadius: 1,
+      },
+    ],
+  };
+
+  return { props: { coin, initialChartData } };
 };
 
 export default CoinDetail;

@@ -1,3 +1,5 @@
+import { ChartData } from "chart.js";
+
 export interface ICoin {
     id: string;
     name: string;
@@ -22,6 +24,7 @@ export interface CoinDetailProps {
         high_24h: number;
         description: string;
     };
+    initialChartData: ChartData<'line'>;
 }
 
 export interface CryptoCardProps {

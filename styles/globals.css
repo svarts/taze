@@ -37,3 +37,29 @@ body {
     from { opacity: 0; }
     to { opacity: 1; }
 }
+
+.gradient-text {
+    background: linear-gradient(90deg, #6153fa, #7bcafe);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-animation 1s infinite;
+    white-space: nowrap;
+}
+
+@keyframes gradient-animation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.link-hover:hover {
+    color: #ffffff;
+    text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.5);
+    transition: text-shadow 0.3s ease-in-out;
+}

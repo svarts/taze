@@ -5,9 +5,10 @@ import { WatchList } from '@/components/WatchList';
 import { useState, useEffect } from 'react';
 import { ICoin, NewsArticle } from '@/types';
 import { logError } from '@/services/logger';
-import { Avatar, AvatarBadge, Input, Box, Container, Button, Stack } from '@chakra-ui/react';
+import { Avatar, AvatarBadge, Input, Box, Container, Button, InputGroup, InputLeftElement, VStack, Flex, Link } from '@chakra-ui/react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import axios from 'axios';
+import { SearchIcon } from '@chakra-ui/icons';
 
 export const getStaticProps: GetStaticProps = async () => {
     try {
@@ -30,7 +31,6 @@ const HomePage: React.FC<HomePageProps> = ({ coins, news }) => {
     const [allCoins, setAllCoins] = useState<ICoin[]>(coins);
     const [page, setPage] = useState<number>(2);
     const [hasMore, setHasMore] = useState<boolean>(true);
-    const [showNews, setShowNews] = useState(false);
 
     useEffect(() => {
         localStorage.getItem('hasVisitedBefore') ? setShowWelcome(false) : setShowWelcome(true);
@@ -73,26 +73,27 @@ const HomePage: React.FC<HomePageProps> = ({ coins, news }) => {
                 </div>
             ) : (
                 <Container maxW="container.xl">
-                    <Box mb="5" display="flex" justifyContent="space-between" alignItems="center" p="6" gap={4}>
-                        <Input
-                            placeholder="Search Cryptocurrencies"
-                            value={searchText}
-                            onChange={(e) => setSearchText(e.target.value)}
-                            width={{ base: "70%", md: "400px" }}
-                            bg="none"
-                            borderColor="gray.600"
-                            textColor={searchText ? 'white' : 'gray.400'}
-                            borderRadius="xl"
-                        />
-                        {/* <Stack >
-                            <Button onClick={() => setShowNews(!showNews)} colorScheme="teal" variant="outline">
-                                For the latest crypto news
-                            </Button>
-                            {showNews ? <NewsList news={news} /> : null}
-                        </Stack> */}
-                        <Avatar>
-                            <AvatarBadge boxSize='1.25em' bg='#2dd4bf' />
-                        </Avatar>
+                    <Box mb="5" display="flex" flexDirection={{ base: 'column', md: 'row' }} alignItems={{ base: 'flex-start', md: 'center' }} p="6" gap={4}>
+                        <Flex flexDirection={{ base: 'row', md: 'row' }} alignItems="center" width="100%">
+                            <InputGroup width="100%">
+                                <InputLeftElement pointerEvents="none">
+                                    <SearchIcon color="gray.400" />
+                                </InputLeftElement>
+                                <Input
+                                    placeholder="Search Cryptocurrencies"
+                                    value={searchText}
+                                    onChange={(e) => setSearchText(e.target.value)}
+                                    bg="#111827"
+                                    borderColor="gray.600"
+                                    textColor={searchText ? "white" : "gray.400"}
+                                    borderRadius="lg"
+                                    width={500}
+                                />
+                            </InputGroup>
+                        </Flex>
+                        <Link href="/news" className="gradient-text link-hover" mt={{ base: 0, md: 4 }}>
+                            ✨ Check for the latest crypto news!
+                        </Link>
                     </Box>
                     {watchlist.length > 0 && (
                         <WatchList
@@ -105,8 +106,8 @@ const HomePage: React.FC<HomePageProps> = ({ coins, news }) => {
                         dataLength={filteredCoins.length}
                         next={fetchMoreCoins}
                         hasMore={hasMore}
-                        loader={<h4>Loading...</h4>}
-                        endMessage={<p style={{ textAlign: 'center', color: 'white' }}><b>Yay! You have seen it all</b></p>}
+                        loader={<h4 style={{ textAlign: "center", color: "#4b5563" }}>Loading...</h4>}
+                        endMessage={<p style={{ textAlign: "center", color: "white", marginBottom: "30px" }}><b>Yay! You have seen it all</b></p>}
                     >
                         <CryptoList
                             cryptos={filteredCoins}

@@ -102,7 +102,7 @@ const CoinDetail: NextPage<CoinDetailProps> = ({ coin, initialChartData }) => {
       />
       <VStack spacing="5" alignItems="center">
         <Box display="flex" flexDirection="column" alignItems="center">
-          <Image src={coin.image} alt={coin.name} boxSize="150px" borderRadius="full" marginBottom={3} />
+          <Image src={coin.image} alt={coin.name} boxSize="120px" borderRadius="full" marginBottom={3} />
           <Heading as="h1" size="xl" textAlign="center">{coin.name}</Heading>
         </Box>
         <Divider borderColor="#6366f1" borderWidth="1px" w="full" />
@@ -110,18 +110,18 @@ const CoinDetail: NextPage<CoinDetailProps> = ({ coin, initialChartData }) => {
           <Box flex="1" mr={{ base: 0, lg: 4 }} mb={{ base: 4, lg: 0 }}>
             <Flex alignItems="center">
               <Stat>
-                <StatLabel fontSize="2xl" marginBottom={2}>Current Price</StatLabel>
+                <StatLabel fontSize="xl" marginBottom={2}>Current Price</StatLabel>
                 <Flex alignItems="center">
                   <Badge
                     colorScheme={coin.price_change_percentage_24h_in_currency >= 0 ? 'green' : 'red'}
-                    fontSize="3xl"
+                    fontSize="2xl"
                     borderRadius="full"
                     marginBottom={3}
                   >
                     ${coin.current_price.toLocaleString()}
                   </Badge>
                   <StatHelpText ml={5}>
-                    <StatHelpText color="white" fontSize="xl">
+                    <StatHelpText color="white" fontSize="lg">
                       <StatArrow type={coin.price_change_percentage_24h_in_currency >= 0 ? 'increase' : 'decrease'} />
                       {coin.price_change_percentage_24h_in_currency.toFixed(2)}%
                     </StatHelpText>
@@ -131,16 +131,16 @@ const CoinDetail: NextPage<CoinDetailProps> = ({ coin, initialChartData }) => {
             </Flex>
             <Flex mt="4" direction={{ base: 'column', md: 'column', lg: 'row' }} justifyContent="space-between">
               <Stat mb={{ base: 4, lg: 0 }}>
-                <StatLabel>Market Cap</StatLabel>
-                <StatNumber>${coin.market_cap.toLocaleString()}</StatNumber>
+                <StatLabel mb={3}>Market Cap</StatLabel>
+                <Badge colorScheme="purple" fontSize="xl" borderRadius="full">${coin.market_cap.toLocaleString()}</Badge>
               </Stat>
               <Stat mb={{ base: 4, lg: 0 }}>
-                <StatLabel>Low (24h)</StatLabel>
-                <StatNumber>${coin.low_24h.toLocaleString()}</StatNumber>
+                <StatLabel mb={3}>Low (24h)</StatLabel>
+                <Badge colorScheme="red" fontSize="xl" borderRadius="full">${coin.low_24h.toLocaleString()}</Badge>
               </Stat>
-              <Stat>
-                <StatLabel>High (24h)</StatLabel>
-                <StatNumber>${coin.high_24h.toLocaleString()}</StatNumber>
+              <Stat mb={{ base: 4, lg: 0 }}>
+                <StatLabel mb={3}>High (24h)</StatLabel>
+                <Badge colorScheme="green" fontSize="xl" borderRadius="full">${coin.high_24h.toLocaleString()}</Badge>
               </Stat>
             </Flex>
             <Box mt="4">

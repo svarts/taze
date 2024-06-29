@@ -90,7 +90,7 @@ const CoinDetail: NextPage<CoinDetailProps> = ({ coin, initialChartData }) => {
   };
 
   return (
-    <Box p="5" borderWidth="1px" borderColor="#6366f1" borderRadius="lg" overflow="hidden" boxShadow="lg" backgroundColor="#1e1b4b" color="white">
+    <Box p="5" borderWidth="1px" borderColor="#4b5563" borderRadius="lg" overflow="hidden" boxShadow="lg" backgroundColor="#111827" color="white">
       <IconButton
         aria-label="Back"
         icon={<ArrowBackIcon />}
@@ -105,7 +105,7 @@ const CoinDetail: NextPage<CoinDetailProps> = ({ coin, initialChartData }) => {
           <Image src={coin.image} alt={coin.name} boxSize="120px" borderRadius="full" marginBottom={3} />
           <Heading as="h1" size="xl" textAlign="center">{coin.name}</Heading>
         </Box>
-        <Divider borderColor="#6366f1" borderWidth="1px" w="full" />
+        <Divider borderColor="#22d3ee" borderWidth="0.5px" w="full" />
         <Flex w="full" direction={{ base: 'column', md: 'column', lg: 'row' }} justifyContent="space-between">
           <Box flex="1" mr={{ base: 0, lg: 4 }} mb={{ base: 4, lg: 0 }}>
             <Flex alignItems="center">

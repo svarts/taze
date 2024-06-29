@@ -3,30 +3,34 @@ import { fetchCoins } from '@/services/api';
 import { CryptoList } from '@/components/CryptoList';
 import { WatchList } from '@/components/WatchList';
 import { useState, useEffect } from 'react';
-import { ICoin } from '@/types';
+import { ICoin, NewsArticle } from '@/types';
 import { logError } from '@/services/logger';
-import { Avatar, AvatarBadge, Input, Box, Container, Button } from '@chakra-ui/react';
+import { Avatar, AvatarBadge, Input, Box, Container, Button, Stack } from '@chakra-ui/react';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import axios from 'axios';
 
 export const getStaticProps: GetStaticProps = async () => {
     try {
         const coins = await fetchCoins(1);
-        return { props: { coins } };
+        const newsResponse = await axios.get('https://api.coingecko.com/api/v3/news');
+        const news: NewsArticle[] = newsResponse.data.data;
+        return { props: { coins, news } };
     } catch (error) {
         logError(error as Error);
-        return { props: { coins: [] } };
+        return { props: { coins: [], news: [] } };
     }
 };
 
 type HomePageProps = InferGetStaticPropsType<typeof getStaticProps>;
 
-const HomePage: React.FC<HomePageProps> = ({ coins }) => {
+const HomePage: React.FC<HomePageProps> = ({ coins, news }) => {
     const [searchText, setSearchText] = useState<string>('');
     const [watchlist, setWatchlist] = useState<ICoin[]>([]);
     const [showWelcome, setShowWelcome] = useState(true);
     const [allCoins, setAllCoins] = useState<ICoin[]>(coins);
     const [page, setPage] = useState<number>(2);
     const [hasMore, setHasMore] = useState<boolean>(true);
+    const [showNews, setShowNews] = useState(false);
 
     useEffect(() => {
         localStorage.getItem('hasVisitedBefore') ? setShowWelcome(false) : setShowWelcome(true);
@@ -44,7 +48,7 @@ const HomePage: React.FC<HomePageProps> = ({ coins }) => {
             const newCoins = await fetchCoins(page);
             setAllCoins(prevCoins => [...prevCoins, ...newCoins]);
             setPage(prevPage => prevPage + 1);
-            if (newCoins.length === 0) setHasMore(false);
+            setHasMore(newCoins.length === 0 ? false : true);
         } catch (error) {
             logError(error as Error);
             setHasMore(false);
@@ -78,8 +82,14 @@ const HomePage: React.FC<HomePageProps> = ({ coins }) => {
                             bg="none"
                             borderColor="gray.600"
                             textColor={searchText ? 'white' : 'gray.400'}
-                            borderRadius="2xl"
+                            borderRadius="xl"
                         />
+                        {/* <Stack >
+                            <Button onClick={() => setShowNews(!showNews)} colorScheme="teal" variant="outline">
+                                For the latest crypto news
+                            </Button>
+                            {showNews ? <NewsList news={news} /> : null}
+                        </Stack> */}
                         <Avatar>
                             <AvatarBadge boxSize='1.25em' bg='#2dd4bf' />
                         </Avatar>

@@ -43,3 +43,13 @@ export interface WatchListProps {
     onRemoveFromWatchlist: (id: string) => void;
     isWatchlist?: boolean;
 }
+
+export interface NewsArticle {
+    title: string;
+    url: string;
+    source: string;
+}
+
+export interface NewsListProps {
+    news: NewsArticle[];
+}

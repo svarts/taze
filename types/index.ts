@@ -12,6 +12,7 @@ export interface ICoin {
 
 export interface CoinDetailProps {
     coin: {
+        id: number;
         image: string;
         name: string;
         current_price: number;

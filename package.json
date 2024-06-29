@@ -16,10 +16,13 @@
     "axios": "^1.7.2",
     "axios-rate-limit": "^1.4.0",
     "axios-retry": "^4.4.1",
+    "chart.js": "^4.4.3",
+    "chartjs-adapter-date-fns": "^3.0.0",
     "framer-motion": "^11.2.12",
     "next": "14.2.3",
     "next-transpile-modules": "^10.0.1",
     "react": "^18",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18",
     "react-infinite-scroll-component": "^6.1.0",
     "react-intersection-observer": "^9.10.3"

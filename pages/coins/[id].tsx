@@ -13,7 +13,7 @@ import { CoinDetailProps } from '@/types';
 ChartJS.register(TimeScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
 
 const limiter = new Bottleneck({
-  minTime: 200, 
+  minTime: 200,
 });
 
 const CoinDetail: NextPage<CoinDetailProps> = ({ coin, initialChartData }) => {
@@ -106,8 +106,8 @@ const CoinDetail: NextPage<CoinDetailProps> = ({ coin, initialChartData }) => {
           <Heading as="h1" size="xl" textAlign="center">{coin.name}</Heading>
         </Box>
         <Divider borderColor="#6366f1" borderWidth="1px" w="full" />
-        <Flex w="full" justifyContent="space-between">
-          <Box flex="1" mr="4">
+        <Flex w="full" direction={{ base: 'column', md: 'column', lg: 'row' }} justifyContent="space-between">
+          <Box flex="1" mr={{ base: 0, lg: 4 }} mb={{ base: 4, lg: 0 }}>
             <Flex alignItems="center">
               <Stat>
                 <StatLabel fontSize="2xl" marginBottom={2}>Current Price</StatLabel>
@@ -129,12 +129,12 @@ const CoinDetail: NextPage<CoinDetailProps> = ({ coin, initialChartData }) => {
                 </Flex>
               </Stat>
             </Flex>
-            <Flex mt="4" justifyContent="space-between">
-              <Stat>
+            <Flex mt="4" direction={{ base: 'column', md: 'column', lg: 'row' }} justifyContent="space-between">
+              <Stat mb={{ base: 4, lg: 0 }}>
                 <StatLabel>Market Cap</StatLabel>
                 <StatNumber>${coin.market_cap.toLocaleString()}</StatNumber>
               </Stat>
-              <Stat>
+              <Stat mb={{ base: 4, lg: 0 }}>
                 <StatLabel>Low (24h)</StatLabel>
                 <StatNumber>${coin.low_24h.toLocaleString()}</StatNumber>
               </Stat>
@@ -157,7 +157,7 @@ const CoinDetail: NextPage<CoinDetailProps> = ({ coin, initialChartData }) => {
             </Select>
             {chartData.datasets.length > 0 && (
               <Box flex="1">
-                <Line data={chartData} options={options} height={200} />
+                <Line data={chartData} options={options} height={210} />
               </Box>
             )}
           </Box>
@@ -170,7 +170,7 @@ const CoinDetail: NextPage<CoinDetailProps> = ({ coin, initialChartData }) => {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.params!;
   const apiBaseURL = 'https://api.coingecko.com/api/v3';
-  
+
   const [coinResponse, chartResponse] = await Promise.all([
     limiter.schedule(() => axios.get(`${apiBaseURL}/coins/${id}`)),
     limiter.schedule(() => axios.get(`${apiBaseURL}/coins/${id}/market_chart`, {

@@ -1,12 +1,14 @@
 import { Box, Container, Flex, Link, Heading, Button } from '@chakra-ui/react';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { ArrowForwardIcon } from '@chakra-ui/icons';
-import { ICoin, HomePageProps } from '@/types';
-import { SearchBar } from '@/components/SearchBar';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { ArrowForwardIcon } from '@chakra-ui/icons';
+import { HomePageProps } from '@/types';
+import { SearchBar } from '@/components/SearchBar';
 import { CryptoList } from '@/components/CryptoList';
 import { WatchList } from '@/components/WatchList';
+import { useCoinSearch } from '@/hooks/useCoinSearch';
+import { useWatchlist } from '@/hooks/useWatchlist';
 import { fetchCoins } from '@/services/api';
 import { logError } from '@/services/logger';
 
@@ -21,38 +23,14 @@ export const getStaticProps = async () => {
 };
 
 const HomePage: React.FC<HomePageProps> = ({ coins }) => {
-    const [searchText, setSearchText] = useState<string>('');
-    const [watchlist, setWatchlist] = useState<ICoin[]>([]);
+    const { searchText, setSearchText, filteredCoins, fetchMoreCoins, hasMore } = useCoinSearch(coins);
+    const { watchlist, addToWatchlist, removeFromWatchlist } = useWatchlist();
     const [showWelcome, setShowWelcome] = useState(true);
-    const [allCoins, setAllCoins] = useState<ICoin[]>(coins);
-    const [hasMore, setHasMore] = useState<boolean>(true);
 
     useEffect(() => {
         const visited = localStorage.getItem('hasVisitedBefore');
         setShowWelcome(!visited);
     }, []);
-
-    const handleWatchlistChange = (coin: ICoin, isAdding: boolean) => {
-        setWatchlist(prev => isAdding
-            ? (prev.find(c => c.id === coin.id) ? prev : [...prev, coin])
-            : prev.filter(c => c.id !== coin.id)
-        );
-    };
-
-    const fetchMoreCoins = async () => {
-        try {
-            const newCoins = await fetchCoins(allCoins.length / 50 + 1);
-            setAllCoins(prevCoins => [...prevCoins, ...newCoins]);
-            setHasMore(newCoins.length > 0);
-        } catch (error) {
-            logError(error as Error);
-            setHasMore(false);
-        }
-    };
-
-    const filteredCoins = allCoins.filter(coin =>
-        coin.name.toLowerCase().includes(searchText.toLowerCase())
-    );
 
     const handleLinkClick = () => {
         setShowWelcome(false);
@@ -88,23 +66,21 @@ const HomePage: React.FC<HomePageProps> = ({ coins }) => {
                             ✨ Check for the latest crypto news!
                         </Link>
                     </Box>
-                    {watchlist.length > 0 && (
-                        <WatchList
-                            watchlist={watchlist}
-                            onRemoveFromWatchlist={(id: string) => handleWatchlistChange({ id } as ICoin, false)}
-                            isWatchlist={true}
-                        />
-                    )}
+                    <WatchList
+                        watchlist={watchlist}
+                        onRemoveFromWatchlist={removeFromWatchlist}
+                        isWatchlist={true}
+                    />
                     <InfiniteScroll
                         dataLength={filteredCoins.length}
-                        next={fetchMoreCoins}
+                        next={() => fetchMoreCoins(fetchCoins)}
                         hasMore={hasMore}
                         loader={<h4 style={{ textAlign: "center", color: "#4b5563" }}>Loading...</h4>}
                         endMessage={<p style={{ textAlign: "center", color: "white", marginBottom: "30px" }}><b>Yay! You have seen it all</b></p>}
                     >
                         <CryptoList
                             cryptos={filteredCoins}
-                            onAddToWatchList={(coin: ICoin) => handleWatchlistChange(coin, true)}
+                            onAddToWatchList={addToWatchlist}
                             isWatchList={false}
                         />
                     </InfiniteScroll>

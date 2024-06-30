@@ -12,6 +12,10 @@ export interface ICoin {
     high_24h: number;
 }
 
+export interface HomePageProps {
+    coins: ICoin[];
+}
+
 export interface CoinDetailProps {
     coin: {
         id: number;
@@ -43,13 +47,20 @@ export interface WatchListProps {
     onRemoveFromWatchlist: (id: string) => void;
     isWatchlist?: boolean;
 }
-
 export interface NewsArticle {
+    imageurl: string;
     title: string;
-    url: string;
+    body: string;
     source: string;
+    published_on: string;
+    url: string;
 }
 
-export interface NewsListProps {
-    news: NewsArticle[];
+export interface NewsPageProps {
+    newsArticles: NewsArticle[];
+}
+
+export interface SearchBarProps {
+    value: string;
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }

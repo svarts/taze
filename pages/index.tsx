@@ -1,61 +1,56 @@
-import { GetStaticProps, InferGetStaticPropsType } from 'next';
-import { fetchCoins } from '@/services/api';
+import { Box, Container, Flex, Link, Heading, Button } from '@chakra-ui/react';
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { ArrowForwardIcon } from '@chakra-ui/icons';
+import { ICoin, HomePageProps } from '@/types';
+import { SearchBar } from '@/components/SearchBar';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import { CryptoList } from '@/components/CryptoList';
 import { WatchList } from '@/components/WatchList';
-import { useState, useEffect } from 'react';
-import { ICoin, NewsArticle } from '@/types';
+import { fetchCoins } from '@/services/api';
 import { logError } from '@/services/logger';
-import { Avatar, AvatarBadge, Input, Box, Container, Button, InputGroup, InputLeftElement, VStack, Flex, Link } from '@chakra-ui/react';
-import InfiniteScroll from 'react-infinite-scroll-component';
-import axios from 'axios';
-import { SearchIcon } from '@chakra-ui/icons';
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps = async () => {
     try {
         const coins = await fetchCoins(1);
-        const newsResponse = await axios.get('https://api.coingecko.com/api/v3/news');
-        const news: NewsArticle[] = newsResponse.data.data;
-        return { props: { coins, news } };
+        return { props: { coins } };
     } catch (error) {
         logError(error as Error);
-        return { props: { coins: [], news: [] } };
+        return { props: { coins: [] } };
     }
 };
 
-type HomePageProps = InferGetStaticPropsType<typeof getStaticProps>;
-
-const HomePage: React.FC<HomePageProps> = ({ coins, news }) => {
+const HomePage: React.FC<HomePageProps> = ({ coins }) => {
     const [searchText, setSearchText] = useState<string>('');
     const [watchlist, setWatchlist] = useState<ICoin[]>([]);
     const [showWelcome, setShowWelcome] = useState(true);
     const [allCoins, setAllCoins] = useState<ICoin[]>(coins);
-    const [page, setPage] = useState<number>(2);
     const [hasMore, setHasMore] = useState<boolean>(true);
 
     useEffect(() => {
-        localStorage.getItem('hasVisitedBefore') ? setShowWelcome(false) : setShowWelcome(true);
+        const visited = localStorage.getItem('hasVisitedBefore');
+        setShowWelcome(!visited);
     }, []);
 
     const handleWatchlistChange = (coin: ICoin, isAdding: boolean) => {
         setWatchlist(prev => isAdding
-            ? prev.find(c => c.id === coin.id) ? prev : [...prev, coin]
+            ? (prev.find(c => c.id === coin.id) ? prev : [...prev, coin])
             : prev.filter(c => c.id !== coin.id)
         );
     };
 
     const fetchMoreCoins = async () => {
         try {
-            const newCoins = await fetchCoins(page);
+            const newCoins = await fetchCoins(allCoins.length / 50 + 1);
             setAllCoins(prevCoins => [...prevCoins, ...newCoins]);
-            setPage(prevPage => prevPage + 1);
-            setHasMore(newCoins.length === 0 ? false : true);
+            setHasMore(newCoins.length > 0);
         } catch (error) {
             logError(error as Error);
             setHasMore(false);
         }
     };
 
-    const filteredCoins = allCoins.filter((coin: { name: string; }) =>
+    const filteredCoins = allCoins.filter(coin =>
         coin.name.toLowerCase().includes(searchText.toLowerCase())
     );
 
@@ -68,28 +63,26 @@ const HomePage: React.FC<HomePageProps> = ({ coins, news }) => {
         <>
             {showWelcome ? (
                 <div className="welcome-page">
-                    <h1 className="welcome-text">Welcome to Crypto Tracking App</h1>
-                    <Button className="welcome-link" onClick={handleLinkClick}>Enter</Button>
+                    <Image src="/taze-logo.svg" alt="Taze Logo" width={60} height={60} />
+                    <Flex alignItems="center" mb={4}>
+                        <Heading size="xl">Taze</Heading>
+                    </Flex>
+                    <Heading className="welcome-text" size="md">Welcome to the Crypto Tracking App</Heading>
+                    <Button
+                        className="welcome-link"
+                        onClick={handleLinkClick}
+                        rightIcon={<ArrowForwardIcon />}
+                        _hover={{ transform: 'translateX(10px)' }}
+                        transition="transform 0.6s ease-in-out"
+                    >
+                        Enter
+                    </Button>
                 </div>
             ) : (
                 <Container maxW="container.xl">
                     <Box mb="5" display="flex" flexDirection={{ base: 'column', md: 'row' }} alignItems={{ base: 'flex-start', md: 'center' }} p="6" gap={4}>
                         <Flex flexDirection={{ base: 'row', md: 'row' }} alignItems="center" width="100%">
-                            <InputGroup width="100%">
-                                <InputLeftElement pointerEvents="none">
-                                    <SearchIcon color="gray.400" />
-                                </InputLeftElement>
-                                <Input
-                                    placeholder="Search Cryptocurrencies"
-                                    value={searchText}
-                                    onChange={(e) => setSearchText(e.target.value)}
-                                    bg="#111827"
-                                    borderColor="gray.600"
-                                    textColor={searchText ? "white" : "gray.400"}
-                                    borderRadius="lg"
-                                    width={500}
-                                />
-                            </InputGroup>
+                            <SearchBar value={searchText} onChange={(e) => setSearchText(e.target.value)} />
                         </Flex>
                         <Link href="/news" className="gradient-text link-hover" mt={{ base: 0, md: 4 }}>
                             ✨ Check for the latest crypto news!

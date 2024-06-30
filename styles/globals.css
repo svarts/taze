@@ -12,14 +12,14 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #1a202c;
+    background-color: #1f2937;
     color: white;
     text-align: center;
     animation: fadeIn 2s ease-in-out;
 }
 
 .welcome-text {
-    font-size: 2rem;
+    font-size: 1.3rem;
     margin-bottom: 20px;
 }
 

@@ -50,15 +50,21 @@ To integrate the CoinGecko News API, we made use of axios to fetch the news data
 ## How to Run
 
 1. **Clone the repository**:
+    ```bash
    git clone <https://github.com/svarts/taze.git>
    cd taze
+   ```
 
 2. **Install dependencies**:
+    ```bash
    npm install
+   ```
 
 3. **Run the development server**:
+    ```bash
    npm run dev
-
+   ```
+   
 4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ## Additional Notes

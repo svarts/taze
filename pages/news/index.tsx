@@ -1,4 +1,6 @@
-import { Box, Image, Text, Heading, Stack, Link, Container } from '@chakra-ui/react';
+import { Box, Image, Text, Heading, Stack, Link, Container, IconButton } from '@chakra-ui/react';
+import { ArrowBackIcon } from '@chakra-ui/icons';
+import { useRouter } from 'next/router';
 import axios from 'axios';
 import { NewsArticle, NewsPageProps } from '@/types';
 import { logError } from '@/services/logger';
@@ -15,8 +17,23 @@ export const getServerSideProps = async () => {
 };
 
 const NewsPage: React.FC<NewsPageProps> = ({ newsArticles }) => {
+  const router = useRouter();
+
+  const handleBackClick = () => {
+    router.back();
+  };
+
   return (
     <Container maxW="container.lg" p={8}>
+      <IconButton
+        aria-label="Back"
+        icon={<ArrowBackIcon />}
+        onClick={handleBackClick}
+        colorScheme="whiteAlpha"
+        variant="ghost"
+        color="white"
+        mb="4"
+      />
       <Heading as="h6" size="xl" mb={6} textAlign="center" color="gray.300" fontWeight="medium">Latest Crypto News</Heading>
       {newsArticles.map((article, index) => (
         <Link key={index} href={article.url} isExternal _hover={{ textDecoration: 'none' }}>

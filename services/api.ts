@@ -17,9 +17,9 @@ axiosRetry(axiosInstance, {
 });
 
 const http = rateLimit(axiosInstance, {
-    maxRequests: 5,
-    perMilliseconds: 1000,
-    maxRPS: 5,
+    maxRequests: 30, 
+    perMilliseconds: 60 * 1000,
+    maxRPS: 0.5, 
 });
 
 let cache: any = null;

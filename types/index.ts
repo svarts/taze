@@ -48,13 +48,15 @@ export interface WatchListProps {
     isWatchlist?: boolean;
 }
 export interface NewsArticle {
-    imageurl: string;
     title: string;
-    body: string;
-    source: string;
-    published_on: string;
+    description: string;  
+    author: string | null; 
+    updated_at: number;  
     url: string;
+    news_site: string; 
+    thumb_2x: string | null;
 }
+
 
 export interface NewsPageProps {
     newsArticles: NewsArticle[];
